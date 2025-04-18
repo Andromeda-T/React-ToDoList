@@ -1,0 +1,10 @@
+.image {
+  @media (min-width: 300px) {
+    /* display: none; */
+    height: 20vh;
+  }
+  @media (min-width: 500px) {
+    /* display: block; */
+    height: 100%;
+  }
+}
