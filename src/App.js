@@ -1,22 +1,22 @@
 import { useState } from "react";
 import "./App.css";
 
-// const ToDoWork = [
-//   { work: "Do1", finish: false },
-//   { work: "Do2", finish: false },
-//   { work: "Do3", finish: false },
-//   { work: "Do3", finish: false },
-// ];
-
 function App() {
   return <ToDo />;
 }
 
 function ToDo() {
   const [task, setTask] = useState([]);
+  const [Data, setData] = useState("");
+  const [active, setActive] = useState("All");
 
   function taskHandle(data) {
-    setTask((datas) => [...datas, data]);
+    const newData = {
+      Data: data,
+      finish: false,
+      id: Date.now(),
+    };
+    setTask((datas) => [...datas, newData]);
     console.log(data);
   }
 
@@ -33,22 +33,30 @@ function ToDo() {
         <span className="text-white font-semibold text-4xl tracking-[.5rem]">
           TO-DO
         </span>
-        <AddTask onSetTask={setTask} taskHandle={taskHandle} />
-        <Tasks task={task} />
-        <Control />
+        <AddTask
+          onSetTask={setTask}
+          taskHandle={taskHandle}
+          Data={Data}
+          setData={setData}
+        />
+        <Tasks task={task} setTask={setTask} active={active} />
+        <Control
+          Task={task}
+          setActive={setActive}
+          setTask={setTask}
+          active={active}
+        />
       </div>
     </div>
   );
 }
 
-function AddTask({ taskHandle }) {
-  const [Data, setData] = useState("");
-
+function AddTask({ taskHandle, Data, setData }) {
   function setSubmit(e) {
     e.preventDefault();
     if (!Data) return;
     setData("");
-    taskHandle({ Data: Data, finish: false });
+    taskHandle(Data);
   }
 
   return (
@@ -71,11 +79,27 @@ function AddTask({ taskHandle }) {
   );
 }
 
-function Tasks({ task }) {
-  return task.map((work) => <EachTasks Task={work} />);
+function Tasks({ task, setTask, active }) {
+  let filteredTasks;
+  if (active === "All") filteredTasks = task;
+  if (active === "Active")
+    filteredTasks = task.filter((item) => item.finish === false);
+  if (active === "Completed")
+    filteredTasks = task.filter((item) => item.finish);
+
+  return filteredTasks.map((work) => (
+    <EachTasks Task={work} setTask={setTask} key={work.id} />
+  ));
 }
-function EachTasks({ Task }) {
-  const [isFinish , setIsFinish] = useState(Task.finish)
+
+function EachTasks({ Task, setTask }) {
+  function toggleFinish() {
+    setTask((tasks) =>
+      tasks.map((item) =>
+        item.id === Task.id ? { ...item, finish: !item.finish } : item
+      )
+    );
+  }
 
   return (
     <div className="bg-white shadow-lg">
@@ -83,10 +107,13 @@ function EachTasks({ Task }) {
         <input
           type="checkbox"
           className="absolute left-5 top-1/2 -translate-y-1/2 scale-150"
-          onClick={() => setIsFinish(!isFinish)}
+          onClick={toggleFinish}
+          checked={Task.finish}
         />
         <li
-          className={`w-full p-3 rounded-t-md pl-14 list-none text-[1rem] ${isFinish ? "text-gray-300 line-through" : ""}`}
+          className={`w-full p-3 rounded-t-md pl-14 list-none text-[1rem] ${
+            Task.finish ? "text-gray-300 line-through" : ""
+          }`}
         >
           {Task.Data}
         </li>
@@ -95,19 +122,50 @@ function EachTasks({ Task }) {
   );
 }
 
-function Control() {
+function Control({ Task, setActive, setTask, active }) {
+  const me = Task.filter((task) => task.finish === false).length;
+
+  function clear() {
+    setTask(Task.filter((item) => item.finish === false));
+  }
+
   return (
-    <div className="relative flex justify-between text-[.75rem] bg-white shadow-md p-2 text-gray-500">
+    <div className="relative flex justify-between text-[.8rem] bg-white shadow-md p-2 text-gray-400 font-bold">
       <div>
-        <span>5 tasks left</span>
+        <span>{me} tasks left</span>
       </div>
       <div className="space-x-2">
-        <span>All</span>
-        <span>Active</span>
-        <span>Completed</span>
+        <button
+          className={`cursor-pointer hover:text-gray-800 ${
+            active === "All" ? "text-blue-600 underline underline-offset-4 hover:text-blue-600" : ""
+          }`}
+          onClick={() => setActive("All")}
+        >
+          All
+        </button>
+        <button
+          className={`cursor-pointer hover:text-gray-800 ${
+            active === "Active" ? "text-blue-600 underline underline-offset-4 hover:text-blue-600" : ""
+          }`}
+          value="Active"
+          onClick={() => setActive("Active")}
+        >
+          Active
+        </button>
+        <button
+          className={`cursor-pointer hover:text-gray-800 ${
+            active === "Completed" ? "text-blue-600 underline underline-offset-4 hover:text-blue-600" : ""
+          }`}
+          value="Completed"
+          onClick={() => setActive("Completed")}
+        >
+          Completed
+        </button>
       </div>
       <div>
-        <span>Clear Completed</span>
+        <button className="hover:text-gray-800" value="Clear" onClick={clear}>
+          Clear Completed
+        </button>
       </div>
     </div>
   );
