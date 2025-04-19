@@ -93,6 +93,11 @@ function Tasks({ task, setTask, active }) {
 }
 
 function EachTasks({ Task, setTask }) {
+
+  function Delete() {
+    setTask((Tasks) => Tasks.filter((task) => task.id !== Task.id));
+  }
+
   function toggleFinish() {
     setTask((tasks) =>
       tasks.map((item) =>
@@ -102,21 +107,34 @@ function EachTasks({ Task, setTask }) {
   }
 
   return (
-    <div className="bg-white shadow-lg">
-      <div className="relative border-b-[1px] border-gray-300">
-        <input
-          type="checkbox"
-          className="absolute left-5 top-1/2 -translate-y-1/2 scale-150"
-          onClick={toggleFinish}
-          checked={Task.finish}
-        />
-        <li
-          className={`w-full p-3 rounded-t-md pl-14 list-none text-[1rem] ${
-            Task.finish ? "text-gray-300 line-through" : ""
-          }`}
-        >
-          {Task.Data}
-        </li>
+    <div className="bg-white shadow-lg group">
+      <div className="flex justify-between border-b-[1px]">
+        <div className="relative border-gray-300 w-full">
+          <input
+            type="checkbox"
+            className="absolute left-5 top-1/2 -translate-y-1/2 scale-150"
+            onClick={toggleFinish}
+            checked={Task.finish}
+          />
+          <li
+            className={`w-full p-3 rounded-t-md pl-14 list-none text-[1rem] ${
+              Task.finish ? "text-gray-300 line-through" : ""
+            }`}
+          >
+            {Task.Data}
+          </li>
+        </div>
+        <div className="mr-4 hidden group-hover:flex">
+          <button onClick={Delete}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18">
+              <path
+                fill="#494C6B"
+                fillRule="evenodd"
+                d="M16.97 0l.708.707L9.546 8.84l8.132 8.132-.707.707-8.132-8.132-8.132 8.132L0 16.97l8.132-8.132L0 .707.707 0 8.84 8.132 16.971 0z"
+              />
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -137,7 +155,9 @@ function Control({ Task, setActive, setTask, active }) {
       <div className="space-x-2">
         <button
           className={`cursor-pointer hover:text-gray-800 ${
-            active === "All" ? "text-blue-600 underline underline-offset-4 hover:text-blue-600" : ""
+            active === "All"
+              ? "text-blue-600 underline underline-offset-4 hover:text-blue-600"
+              : ""
           }`}
           onClick={() => setActive("All")}
         >
@@ -145,7 +165,9 @@ function Control({ Task, setActive, setTask, active }) {
         </button>
         <button
           className={`cursor-pointer hover:text-gray-800 ${
-            active === "Active" ? "text-blue-600 underline underline-offset-4 hover:text-blue-600" : ""
+            active === "Active"
+              ? "text-blue-600 underline underline-offset-4 hover:text-blue-600"
+              : ""
           }`}
           value="Active"
           onClick={() => setActive("Active")}
@@ -154,7 +176,9 @@ function Control({ Task, setActive, setTask, active }) {
         </button>
         <button
           className={`cursor-pointer hover:text-gray-800 ${
-            active === "Completed" ? "text-blue-600 underline underline-offset-4 hover:text-blue-600" : ""
+            active === "Completed"
+              ? "text-blue-600 underline underline-offset-4 hover:text-blue-600"
+              : ""
           }`}
           value="Completed"
           onClick={() => setActive("Completed")}
