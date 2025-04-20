@@ -1,14 +1,24 @@
 import EachTasks from "./EachTask";
 
-export default function Tasks({ task, setTask, active }) {
-    let filteredTasks;
-    if (active === "All") filteredTasks = task;
-    if (active === "Active")
-        filteredTasks = task.filter((item) => item.finish === false);
-    if (active === "Completed")
-        filteredTasks = task.filter((item) => item.finish);
+export default function Tasks({ task, setTask, active, search }) {
+    let filteredTasks = task;
 
-    return filteredTasks.map((work) => (
-        <EachTasks Task={work} setTask={setTask} key={work.id} />
+    if (search !== "") {
+        filteredTasks = filteredTasks.filter((task) =>
+            task.Data.toLowerCase().includes(search.toLowerCase())
+        );
+    }
+
+    if (active === "Active") {
+        filteredTasks = filteredTasks.filter((task) => task.finish === false);
+    }
+    if (active === "Completed") {
+        filteredTasks = filteredTasks.filter((task) => task.finish === true);
+    }
+
+    const FilterPined = filteredTasks.sort((a , b) => b.pin - a.pin)
+
+    return FilterPined.map((work) => (
+        <EachTasks Task={work} setTask={setTask} key={work.id}/>
     ));
 }
