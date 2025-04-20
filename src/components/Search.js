@@ -8,14 +8,14 @@ export default function Search({ search, setSearch }) {
             onSubmit={(e) => handleSubmit(e)}
             className="flex justify-between items-center relative"
         >
-            <span className="text-white font-semibold text-4xl tracking-[.5rem] ">
+            <span className="text-white font-semibold text-4xl tracking-[.5rem]">
                 TO-DO
             </span>
             <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search for a Task..."
-                className="p-2 rounded-md pl-14 "
+                className="p-2 rounded-md pl-14 dark:bg-[#25273c] dark:text-white"
             ></input>
             <svg
                 className="absolute right-[210px] opacity-50"
